@@ -6,6 +6,9 @@ import {createEventsListTemplate} from "./view/list-events.js";
 import {createFormEditTemplate} from "./view/form-edit.js";
 import {createEventsItemTemplate} from "./view/events-item.js";
 import {createFormNewPointTemplate} from "./view/form-new-point.js";
+import {generateTrip} from "./mock/trip";
+
+generateTrip();
 
 const COUNT_ITEM_EVENT = 3;
 
