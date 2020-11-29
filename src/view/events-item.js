@@ -1,3 +1,14 @@
+// {
+//   typeEvent: type,
+//   city: generateRandomData(CITIES),
+//   offers: offerslist,
+//   destinationInfo: getDescription(DESCRIPTIONS),
+//   photos: getPhotos(),
+//   price: getRandomInteger(1, 1500),
+//   date: getDate(),
+//   isFavourite: Boolean(getRandomInteger()),
+// };
+
 export const createEventsItemTemplate = () => {
   return `<li class="trip-events__item">
               <div class="event">

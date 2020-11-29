@@ -167,7 +167,7 @@ const getDate = () => {
 const type = generateRandomData(TypeEvents);
 const offerslist = getOffersByType(type, Offers);
 
-export const generateEventPoint = () => {
+const generateEventPoint = () => {
   return {
     typeEvent: type,
     city: generateRandomData(CITIES),
@@ -180,5 +180,10 @@ export const generateEventPoint = () => {
   };
 };
 
-// generateTrip();
-// console.log(generateEventPoint());
+export const generateTripPoints = (points = 15) => {
+  const result = [];
+  for (let i = 0; i < points; i++) {
+    result.push(generateEventPoint());
+  }
+  return result;
+};
