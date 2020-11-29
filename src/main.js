@@ -6,20 +6,13 @@ import {createEventsListTemplate} from "./view/list-events.js";
 import {createFormEditTemplate} from "./view/form-edit.js";
 import {createEventsItemTemplate} from "./view/events-item.js";
 import {createFormNewPointTemplate} from "./view/form-new-point.js";
-import {generateTrip} from "./mock/trip";
-
-generateTrip();
-
-const COUNT_ITEM_EVENT = 3;
+import {generateTripPoints} from "./mock/trip";
+import {render} from "./utils/utils";
 
 const bodyElement = document.querySelector(`.page-body`);
 const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const ControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const siteTripEventsElement = bodyElement.querySelector(`.trip-events`);
-
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 render(headerMainElement, createTripInfoTemplate(), `afterbegin`);
 render(ControlsElement, createMenuTemplate(), `beforeend`);
@@ -31,8 +24,11 @@ const siteListEventsElement = siteTripEventsElement.querySelector(`.trip-events_
 
 render(siteListEventsElement, createFormEditTemplate(), `beforeend`);
 
-for (let i = 0; i < COUNT_ITEM_EVENT; i++) {
-  render(siteListEventsElement, createEventsItemTemplate(), `beforeend`);
-}
+const EVENT_POINTS = generateTripPoints();
+EVENT_POINTS.forEach((point) => {
+  render(siteListEventsElement, createEventsItemTemplate(point), `beforeend`);
+});
+
+// render(siteListEventsElement, createEventsItemTemplate(obj), `beforeend`);
 
 render(siteListEventsElement, createFormNewPointTemplate(), `beforeend`);

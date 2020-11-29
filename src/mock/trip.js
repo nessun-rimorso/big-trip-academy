@@ -25,10 +25,6 @@ const TypeEvents = {
     name: `Drive`,
     offers: [`LUAGGAGE`, `MEAL`],
   },
-  CAR: {
-    name: `Car`,
-    offers: [`LUAGGAGE`, `MEAL`],
-  },
   FLIGHT: {
     name: `Flight`,
     offers: [`LUAGGAGE`, `COMFORT_CLASS`, `BY_TRAIN`, `UBER`, `MEAL`, `RENT_CAR`],
@@ -115,9 +111,7 @@ const getOffersByType = (type, offers) => {
     const isCheck = getRandomInteger();
 
     if (isCheck) {
-      const offer = {
-        [item]: offers[item],
-      };
+      const offer = offers[item];
       result.push(offer);
     }
   });
@@ -149,36 +143,47 @@ const getPhotos = (from = 1, to = 8) => {
   return result;
 };
 const getDate = () => {
-  const currentYear = dayjs().$y;
-  const from = +(new Date(currentYear - 1, 0));
-  const to = +(new Date(currentYear + 2, 0));
-  const MAX_DURATION = new Date(3600 * 42 * 1000);
+  const {$M: currentMonth, $y: currentYear} = dayjs();
+  const from = +(new Date(currentYear, currentMonth - 1, 0));
+  const to = +(new Date(currentYear, currentMonth + 1, 0));
+  const MAX_DURATION = 3600 * 5 * 1000; // максимальная длительность 5 часов
   const startDate = getRandomInteger(from, to);
-  const duration = getRandomInteger(+(new Date(0)), MAX_DURATION);
-  const endDate = startDate + duration;
+  const endDate = getRandomInteger(startDate, startDate + MAX_DURATION);
+  const duration = dayjs(endDate - startDate - (3600 * 3 * 1000));
+  if (duration.$s > 0) {
+    duration.$m = duration.$m + 1;
+    duration.$s = 0;
+  }
+
+  const durationFormatted = (duration.$H === 0) ? duration.format(`mm[M]`) : duration.format(`HH[H] mm[M]`);
 
   return {
     from: dayjs(startDate),
     to: dayjs(endDate),
-    duration: dayjs(duration),
+    duration: durationFormatted,
   };
 };
 
-const type = generateRandomData(TypeEvents);
-const offerslist = getOffersByType(type, Offers);
-
-export const generateEventPoint = () => {
-  return {
-    typeEvent: type,
+const generateEventPoint = () => {
+  const template = {
+    typeEvent: generateRandomData(TypeEvents),
     city: generateRandomData(CITIES),
-    offers: offerslist,
     destinationInfo: getDescription(DESCRIPTIONS),
     photos: getPhotos(),
     price: getRandomInteger(1, 1500),
     date: getDate(),
     isFavourite: Boolean(getRandomInteger()),
   };
+
+  template.offers = getOffersByType(template.typeEvent, Offers);
+
+  return template;
 };
 
-// generateTrip();
-// console.log(generateEventPoint());
+export const generateTripPoints = (points = 15) => {
+  const result = [];
+  for (let i = 0; i < points; i++) {
+    result.push(generateEventPoint());
+  }
+  return result;
+};
