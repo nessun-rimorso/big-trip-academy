@@ -6,8 +6,12 @@ import {createEventsListTemplate} from "./view/list-events.js";
 import {createFormEditTemplate} from "./view/form-edit.js";
 import {createEventsItemTemplate} from "./view/events-item.js";
 import {createFormNewPointTemplate} from "./view/form-new-point.js";
-import {generateTripPoints} from "./mock/trip";
+import {generateTripPoints, TypeEvents, CITIES, generateVoidPoint} from "./mock/trip";
 import {render} from "./utils/utils";
+
+const EVENT_POINTS = generateTripPoints(1);
+const EVENT_EDIT = generateTripPoints(1);
+const EVENT_CREATE = generateVoidPoint(1);
 
 const bodyElement = document.querySelector(`.page-body`);
 const headerMainElement = bodyElement.querySelector(`.trip-main`);
@@ -22,13 +26,14 @@ render(siteTripEventsElement, createEventsListTemplate(), `beforeend`);
 
 const siteListEventsElement = siteTripEventsElement.querySelector(`.trip-events__list`);
 
-render(siteListEventsElement, createFormEditTemplate(), `beforeend`);
+//console.log(...EVENT_EDIT)
+render(siteListEventsElement, createFormEditTemplate(...EVENT_EDIT, TypeEvents, CITIES, `edit`), `beforeend`);
 
-const EVENT_POINTS = generateTripPoints();
-EVENT_POINTS.forEach((point) => {
-  render(siteListEventsElement, createEventsItemTemplate(point), `beforeend`);
-});
+// console.log(EVENT_POINTS)
+ EVENT_POINTS.forEach((point) => {
+   render(siteListEventsElement, createEventsItemTemplate(point), `beforeend`);
+ });
 
-// render(siteListEventsElement, createEventsItemTemplate(obj), `beforeend`);
+render(siteListEventsElement, createFormEditTemplate(EVENT_CREATE, TypeEvents, CITIES, `create`), `beforeend`);
 
-render(siteListEventsElement, createFormNewPointTemplate(), `beforeend`);
+// todo: надо считать duration где-то тут

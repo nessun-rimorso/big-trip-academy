@@ -1,3 +1,21 @@
+const getSelectedOffers = (offers) => {
+
+  if (!offers || !offers.length) {
+    return;
+  }
+
+  const result = [];
+  offers.forEach((offer) => {
+    const offerData = Object.values(offer)[0];
+
+    if (offerData.isActive) {
+      result.push(offerData);
+    }
+
+  });
+
+  return result;
+};
 const getOffersTemplate = (nameOffer, priceOffer) => {
   return `
     <li class="event__offer">
@@ -6,8 +24,9 @@ const getOffersTemplate = (nameOffer, priceOffer) => {
       <span class="event__offer-price">${priceOffer}</span>
     </li>`;
 };
-
 const generateOffersTemplate = (list, template) => {
+  if (!list) return ``;
+
   let result = ``;
 
   list.forEach((item) => {
@@ -18,8 +37,9 @@ const generateOffersTemplate = (list, template) => {
   return result;
 };
 
-export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {
+export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {  
   const imgPathName = typeEvent.name.toLowerCase();
+  const selectedOffers = getSelectedOffers(offers);
 
   return `<li class="trip-events__item">
               <div class="event">
@@ -42,7 +62,7 @@ export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFa
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                  ${generateOffersTemplate(offers, getOffersTemplate)}
+                  ${generateOffersTemplate(selectedOffers, getOffersTemplate)}
                 </ul>
                 <button class="event__favorite-btn${isFavourite ? ` event__favorite-btn--active` : ``}" type="button">
                   <span class="visually-hidden">Add to favorite</span>

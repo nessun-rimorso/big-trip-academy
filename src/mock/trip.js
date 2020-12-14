@@ -1,6 +1,13 @@
 import dayjs from "dayjs";
 
-const TypeEvents = {
+const getRandomInteger = (a = 0, b = 1) => {
+  const lower = Math.ceil(Math.min(a, b));
+  const upper = Math.floor(Math.max(a, b));
+
+  return Math.floor(lower + Math.random() * (upper - lower + 1));
+};
+
+export const TypeEvents = {
   TAXI: {
     name: `Taxi`,
     offers: [],
@@ -14,7 +21,7 @@ const TypeEvents = {
     offers: [`COMFORT_CLASS`, `UBER`, `MEAL`, `CHOOSE_SEATS`, `BOOK_TICKETS`],
   },
   SHIP: {
-    name: `Train`,
+    name: `Ship`,
     offers: [`COMFORT_CLASS`, `UBER`, `MEAL`, `CHOOSE_SEATS`, `RENT_CAR`],
   },
   TRANSPORT: {
@@ -34,7 +41,7 @@ const TypeEvents = {
     offers: [`BY_TRAIN`, `MEAL`, `LUNCH`],
   },
 };
-const CITIES = [
+export const CITIES = [
   `Rome`,
   `Florence`,
   `Naples`,
@@ -50,49 +57,52 @@ const Offers = {
   LUAGGAGE: {
     name: `Add luggage`,
     price: 30,
+    isActive: false,
   },
   COMFORT_CLASS: {
     name: `Switch to comfort class`,
     price: 56,
+    isActive: false,
   },
   BY_TRAIN: {
     name: `Travel by train`,
     price: 2576,
+    isActive: !!getRandomInteger(),
   },
   UBER: {
     name: `Order Uber`,
     price: 20,
+    isActive: !!getRandomInteger(),
   },
   MEAL: {
     name: `Add meal`,
     price: 1,
+    isActive: !!getRandomInteger(),
   },
   CHOOSE_SEATS: {
     name: `Choose seats`,
     price: 100,
+    isActive: !!getRandomInteger(),
   },
   RENT_CAR: {
     name: `Rent a car`,
     price: 200,
+    isActive: !!getRandomInteger(),
   },
   BOOK_TICKETS: {
     name: `Book tickets`,
     price: 40,
+    isActive: !!getRandomInteger(),
   },
   LUNCH: {
     name: `Lunch in city`,
     price: 30,
+    isActive: !!getRandomInteger(),
   },
 };
 const DESCRIPTIONS = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
 
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
 const generateRandomData = (list) => {
   if (Array.isArray(list)) {
     const randomIndex = getRandomInteger(0, list.length - 1);
@@ -105,15 +115,14 @@ const generateRandomData = (list) => {
   }
 };
 const getOffersByType = (type, offers) => {
+  if (!type) return;
+
   const result = [];
 
   type.offers.forEach((item) => {
-    const isCheck = getRandomInteger();
+    const offer = {[item]: offers[item]};
 
-    if (isCheck) {
-      const offer = offers[item];
-      result.push(offer);
-    }
+    result.push(offer);
   });
 
   return result;
@@ -163,6 +172,17 @@ const getDate = () => {
     duration: durationFormatted,
   };
 };
+const getTotal = (price, offers) => {
+  if (!offers || !offers.length) return;
+
+  let sum = price;
+  offers.forEach((offer) => {
+    if (offer.isActive) {
+      sum += offer.price;
+    }
+  });
+  return sum;
+};
 
 const generateEventPoint = () => {
   const template = {
@@ -176,6 +196,7 @@ const generateEventPoint = () => {
   };
 
   template.offers = getOffersByType(template.typeEvent, Offers);
+  template.total = getTotal(template.price, template.offers);
 
   return template;
 };
@@ -186,4 +207,21 @@ export const generateTripPoints = (points = 15) => {
     result.push(generateEventPoint());
   }
   return result;
+};
+
+export const generateVoidPoint = () => {
+  const template = {
+    typeEvent: ``,
+    city: ``,
+    destinationInfo: ``,
+    photos: ``,
+    price: ``,
+    date: {from: ``, to: ``},
+    isFavourite: false,
+    total: 0,
+  };
+
+  template.offers = getOffersByType(template.typeEvent, Offers);
+
+  return template;
 };
