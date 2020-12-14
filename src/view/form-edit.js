@@ -94,7 +94,6 @@ export const createFormEditTemplate = (
   typeEvents,
   cities,
   mode) => {
-    console.log(mode)
     if (!typeEvent) typeEvent = typeEventDefault;
     const imgPathName = typeEvent.name.toLowerCase();
 
