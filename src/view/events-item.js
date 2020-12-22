@@ -25,7 +25,9 @@ const getOffersTemplate = (nameOffer, priceOffer) => {
     </li>`;
 };
 const generateOffersTemplate = (list, template) => {
-  if (!list) return ``;
+  if (!list) {
+    return ``;
+  }
 
   let result = ``;
 
@@ -37,7 +39,7 @@ const generateOffersTemplate = (list, template) => {
   return result;
 };
 
-export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {  
+export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {
   const imgPathName = typeEvent.name.toLowerCase();
   const selectedOffers = getSelectedOffers(offers);
 

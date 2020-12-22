@@ -1,11 +1,12 @@
 // todo: надо считать total где-то тут, и вообще правильно ли он считается
-// todo: mode???
 // todo: предусмотреть пустые данные на создание
 
 import dayjs from "dayjs";
 
 const templateType = (type, active) => {
-  if (!type || !type.name) return;
+  if (!type || !type.name) {
+    return;
+  }
 
   const {name} = type;
   const nameLowerCase = name.toLowerCase();
@@ -22,7 +23,10 @@ const templateOffer = (offer) => {
   const offerKey = Object.keys(offer)[0];
   const offerLowerCase = offerKey.toLowerCase();
   return `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerLowerCase}-1" type="checkbox" name="event-offer-${offerLowerCase}"${offer[offerKey].isActive ? ` checked` : ``}>
+            <input class="event__offer-checkbox  visually-hidden"
+                   id="event-offer-${offerLowerCase}-1"
+                   type="checkbox"
+                   name="event-offer-${offerLowerCase}"${offer[offerKey].isActive ? ` checked` : ``}>
             <label class="event__offer-label" for="event-offer-${offerLowerCase}-1">
               <span class="event__offer-title">${offer[offerKey].name}</span>
               &plus;&euro;&nbsp;
@@ -46,7 +50,9 @@ const generateTypes = (types, typeActive) => {
   return result;
 };
 const generateCities = (cities) => {
-  if (!cities.length) return ``;
+  if (!cities.length) {
+    return ``;
+  }
   let result = ``;
 
   cities.forEach((city) => {
@@ -56,7 +62,9 @@ const generateCities = (cities) => {
   return result;
 };
 const generateOffers = (offers) => {
-  if (!offers || !offers.length) return ``;
+  if (!offers || !offers.length) {
+    return ``;
+  }
   let result = ``;
 
   offers.forEach((offer) => {
@@ -77,40 +85,56 @@ const templateBtnsCreate = `
   <button class="event__reset-btn" type="reset">Cancel</button>
 `;
 const photosTemplate = (photos) => {
-  if (!photos || !photos.length) return ``;
+  if (!photos || !photos.length) {
+    return ``;
+  }
   let result = `<div class="event__photos-container"><div class="event__photos-tape">`;
 
-  photos.forEach(photo => {
+  photos.forEach((photo) => {
     result += `<img class="event__photo" src="${photo}" alt="Event photo">`;
-  })
+  });
 
   result += `</div></div>`;
   return result;
 };
-const typeEventDefault = {name: `Taxi`, offers: [`ква-ква`],};
+const typeEventDefault = {
+  name: `Bus`,
+  offers: [`LUAGGAGE`, `COMFORT_CLASS`, `MEAL`, `CHOOSE_SEATS`, `BOOK_TICKETS`],
+};
 
 export const createFormEditTemplate = (
-  {city, date: {from, to}, offers, price, typeEvent, destinationInfo, photos},
-  typeEvents,
-  cities,
-  mode) => {
-    if (!typeEvent) typeEvent = typeEventDefault;
-    const imgPathName = typeEvent.name.toLowerCase();
+    {city, date: {from, to}, offers, price, typeEvent, destinationInfo, photos},
+    typeEventslist,
+    cities,
+    mode) => {
 
-    return `<li class="trip-events__item">
+  if (!typeEvent) {
+    typeEvent = typeEventDefault;
+    offers = typeEventDefault.offers;
+  }
+
+  const imgPathName = typeEvent.name.toLowerCase();
+
+  return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${imgPathName}.png" alt="Event type icon">
+                      <img class="event__type-icon"
+                           width="17"
+                           height="17"
+                           src="img/icons/${imgPathName}.png"
+                           alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden"
+                           id="event-type-toggle-1"
+                           type="checkbox">
 
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
-                        ${generateTypes(typeEvents, typeEvent)}
+                        ${generateTypes(typeEventslist, typeEvent)}
                       </fieldset>
                     </div>
                   </div>
