@@ -1,4 +1,5 @@
 import {SORTS} from "../helpers/constants";
+import {createElement} from "../helpers/utils";
 
 const getTemplateSorts = (sorts) => {
   let result = ``;
@@ -22,8 +23,30 @@ const getTemplateSorts = (sorts) => {
   return result;
 };
 
-export const createSortTemplate = () => {
+const createSortTemplate = () => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             ${getTemplateSorts(SORTS)}
           </form>`;
 };
+
+export default class Sort {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSortTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

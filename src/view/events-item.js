@@ -1,3 +1,5 @@
+import {createElement} from "../helpers/utils";
+
 const getSelectedOffers = (offers) => {
 
   if (!offers || !offers.length) {
@@ -18,7 +20,7 @@ const getSelectedOffers = (offers) => {
 };
 const getOffersTemplate = (nameOffer, priceOffer) => {
   return `
-    <li class="event__offer">
+    <li class="event__offer">Random
       <span class="event__offer-title">${nameOffer}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${priceOffer}</span>
@@ -78,3 +80,25 @@ export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFa
               </div>
             </li>`;
 };
+
+// export default class EventsItem {
+//   constructor() {
+//     this._element = null;
+//   }
+//
+//   getTemplate(dataEvent) {
+//     return createEventsItemTemplate(dataEvent);
+//   }
+//
+//   getElement(dataEvent) {
+//     if (!this._element) {
+//       this._element = createElement(this.getTemplate(dataEvent));
+//     }
+//
+//     return this._element;
+//   }
+//
+//   removeElement() {
+//     this._element = null;
+//   }
+// }
