@@ -1,7 +1,8 @@
 // todo: надо считать total где-то тут, и вообще правильно ли он считается
-// todo: предусмотреть пустые данные на создание
 
 import dayjs from "dayjs";
+import {createElement} from "../helpers/utils";
+import {TypeEvents, CITIES} from "../helpers/constants";
 
 const templateType = (type, active) => {
   if (!type || !type.name) {
@@ -49,13 +50,10 @@ const generateTypes = (types, typeActive) => {
 
   return result;
 };
-const generateCities = (cities) => {
-  if (!cities.length) {
-    return ``;
-  }
+const generateCities = () => {
   let result = ``;
 
-  cities.forEach((city) => {
+  CITIES.forEach((city) => {
     result += templateCity(city);
   });
 
@@ -102,12 +100,7 @@ const typeEventDefault = {
   offers: [`LUAGGAGE`, `COMFORT_CLASS`, `MEAL`, `CHOOSE_SEATS`, `BOOK_TICKETS`],
 };
 
-export const createFormEditTemplate = (
-    {city, date: {from, to}, offers, price, typeEvent, destinationInfo, photos},
-    typeEventslist,
-    cities,
-    mode) => {
-
+const createFormEditTemplate = ({city, date: {from, to}, offers, price, typeEvent, destinationInfo, photos}, mode) => {
   if (!typeEvent) {
     typeEvent = typeEventDefault;
     offers = typeEventDefault.offers;
@@ -134,7 +127,7 @@ export const createFormEditTemplate = (
                     <div class="event__type-list">
                       <fieldset class="event__type-group">
                         <legend class="visually-hidden">Event type</legend>
-                        ${generateTypes(typeEventslist, typeEvent)}
+                        ${generateTypes(TypeEvents, typeEvent)}
                       </fieldset>
                     </div>
                   </div>
@@ -150,7 +143,7 @@ export const createFormEditTemplate = (
                            value="${city ? city : ``}"
                            list="destination-list-1">
                     <datalist id="destination-list-1">
-                      ${generateCities(cities)}
+                      ${generateCities()}
                     </datalist>
                   </div>
 
@@ -199,3 +192,27 @@ export const createFormEditTemplate = (
               </form>
             </li>`;
 };
+
+export default class EventEdit {
+  constructor(trip, mode) {
+    this._trip = trip;
+    this._mode = mode;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFormEditTemplate(this._trip, this._mode);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

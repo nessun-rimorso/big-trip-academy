@@ -3,14 +3,14 @@ import SiteMenu from "./view/menu.js";
 import Filters from "./view/filters.js";
 import Sort from "./view/sort.js";
 import EventsList from "./view/list-events.js";
+import EventItem from "./view/events-item.js";
+import EventEdit from "./view/form-edit.js";
+import NoEventTripView from "./view/no-event-trip.js";
 
-import {createEventsListTemplate} from "./view/list-events.js";
-import {createEventsItemTemplate} from "./view/events-item.js";
-import {createFormEditTemplate} from "./view/form-edit.js";
-import {generateTripPoints, TypeEvents, CITIES, generateVoidPoint} from "./mock/trip";
+import {generateTripPoints, generateVoidPoint} from "./mock/trip";
 import {render, RenderPosition} from "./helpers/utils";
 
-const EVENT_POINTS = generateTripPoints(10);
+const EVENT_POINTS = generateTripPoints(0);
 const EVENT_EDIT = generateTripPoints(1);
 const EVENT_CREATE = generateVoidPoint(1);
 
@@ -27,12 +27,51 @@ render(siteTripEventsElement, new EventsList().getElement(), RenderPosition.BEFO
 
 const siteListEventsElement = siteTripEventsElement.querySelector(`.trip-events__list`);
 
-// render(siteListEventsElement, createFormEditTemplate(...EVENT_EDIT, TypeEvents, CITIES, `edit`), `beforeend`);
-//
-// EVENT_POINTS.forEach((point) => {
-//   render(siteListEventsElement, createEventsItemTemplate(point), `beforeend`);
-// });
-//
-// render(siteListEventsElement, createFormEditTemplate(EVENT_CREATE, TypeEvents, CITIES, `create`), `beforeend`);
+const renderTrip = (ListElement, trip) => {
+  const tripComponent = new EventItem(trip);
+  const tripEditComponent = new EventEdit(trip);
+
+  const replaceCardToForm = () => {
+    ListElement.replaceChild(tripEditComponent.getElement(), tripComponent.getElement());
+  };
+
+  const replaceFormToCard = () => {
+    ListElement.replaceChild(tripComponent.getElement(), tripEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  tripComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replaceCardToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
+
+  tripEditComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToCard();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
+
+  render(ListElement, tripComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+// render(siteListEventsElement, new EventEdit(...EVENT_EDIT, `edit`).getElement(), RenderPosition.BEFOREEND);
+
+EVENT_POINTS.forEach((trip) => {
+  renderTrip(siteListEventsElement, trip);
+});
+
+if (!EVENT_POINTS.length) {
+  render(siteTripEventsElement, new NoEventTripView().getElement(), RenderPosition.BEFOREEND);
+}
+
+// render(siteListEventsElement, new EventEdit().getElement(EVENT_CREATE, TypeEvents, CITIES, `create`), RenderPosition.BEFOREEND);
 
 // todo: надо считать duration где-то тут
+

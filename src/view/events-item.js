@@ -41,7 +41,7 @@ const generateOffersTemplate = (list, template) => {
   return result;
 };
 
-export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {
+const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {
   const imgPathName = typeEvent.name.toLowerCase();
   const selectedOffers = getSelectedOffers(offers);
 
@@ -81,24 +81,25 @@ export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFa
             </li>`;
 };
 
-// export default class EventsItem {
-//   constructor() {
-//     this._element = null;
-//   }
-//
-//   getTemplate(dataEvent) {
-//     return createEventsItemTemplate(dataEvent);
-//   }
-//
-//   getElement(dataEvent) {
-//     if (!this._element) {
-//       this._element = createElement(this.getTemplate(dataEvent));
-//     }
-//
-//     return this._element;
-//   }
-//
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+export default class EventItem {
+  constructor(trip) {
+    this._trip = trip;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventsItemTemplate(this._trip);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
