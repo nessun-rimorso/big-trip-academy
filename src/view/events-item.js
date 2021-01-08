@@ -1,4 +1,4 @@
-import {createElement} from "../helpers/utils";
+import Abstract from "./abstract";
 
 const getSelectedOffers = (offers) => {
   if (!offers || !offers.length) {
@@ -80,25 +80,24 @@ const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite
             </li>`;
 };
 
-export default class EventItem {
+export default class EventItem extends Abstract {
   constructor(trip) {
+    super();
     this._trip = trip;
-    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventsItemTemplate(this._trip);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
   }
 }

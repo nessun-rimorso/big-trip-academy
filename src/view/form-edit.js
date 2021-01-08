@@ -1,7 +1,7 @@
 // todo: надо считать total где-то тут, и вообще правильно ли он считается
 
 import dayjs from "dayjs";
-import {createElement} from "../helpers/utils";
+import Abstract from "./abstract";
 import {TypeEvents, CITIES} from "../helpers/constants";
 
 const templateType = (type, active) => {
@@ -193,26 +193,25 @@ const createFormEditTemplate = ({city, date: {from, to}, offers, price, typeEven
             </li>`;
 };
 
-export default class EventEdit {
+export default class EventEdit extends Abstract {
   constructor(trip, mode) {
+    super();
     this._trip = trip;
     this._mode = mode;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createFormEditTemplate(this._trip, this._mode);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 }
