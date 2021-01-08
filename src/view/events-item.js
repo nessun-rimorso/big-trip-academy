@@ -1,7 +1,6 @@
 import {createElement} from "../helpers/utils";
 
 const getSelectedOffers = (offers) => {
-
   if (!offers || !offers.length) {
     return;
   }

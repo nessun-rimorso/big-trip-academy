@@ -10,7 +10,7 @@ import NoEventTripView from "./view/no-event-trip.js";
 import {generateTripPoints, generateVoidPoint} from "./mock/trip";
 import {render, RenderPosition} from "./helpers/utils";
 
-const EVENT_POINTS = generateTripPoints(0);
+const EVENT_POINTS = generateTripPoints(10);
 const EVENT_EDIT = generateTripPoints(1);
 const EVENT_CREATE = generateVoidPoint(1);
 

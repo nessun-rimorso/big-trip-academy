@@ -1,27 +1,11 @@
-import {createElement} from "../helpers/utils";
+import Abstract from "./abstract";
 
 const createNoTripTemplate = () => {
   return `<p class="trip-events__msg">Click New Event to create your first point</p>`;
 };
 
-export default class NoEventTripView {
-  constructor() {
-    this._element = null;
-  }
-
+export default class NoEventTripView extends Abstract {
   getTemplate() {
     return createNoTripTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,5 +1,5 @@
 import {SORTS} from "../helpers/constants";
-import {createElement} from "../helpers/utils";
+import Abstract from "./abstract";
 
 const getTemplateSorts = (sorts) => {
   let result = ``;
@@ -29,24 +29,8 @@ const createSortTemplate = () => {
           </form>`;
 };
 
-export default class Sort {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Sort extends Abstract {
   getTemplate() {
     return createSortTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
