@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import {getRandomInteger} from "../helpers/utils";
+import {getRandomInteger} from "../utils/common";
 import {TypeEvents, CITIES} from "../helpers/constants";
 
 const Offers = {
