@@ -1,14 +1,12 @@
 import TripInfo from "./view/trip-info.js";
 import SiteMenu from "./view/menu.js";
 import Filters from "./view/filters.js";
-import Sort from "./view/sort.js";
-import EventsList from "./view/list-events.js";
 
-import {createEventsListTemplate} from "./view/list-events.js";
-import {createEventsItemTemplate} from "./view/events-item.js";
-import {createFormEditTemplate} from "./view/form-edit.js";
-import {generateTripPoints, TypeEvents, CITIES, generateVoidPoint} from "./mock/trip";
-import {render, RenderPosition} from "./helpers/utils";
+import TripPresenter from "./presenter/trip.js";
+import {render, RenderPosition} from "./utils/render.js";
+
+import {generateTripPoints, generateVoidPoint} from "./mock/trip";
+
 
 const EVENT_POINTS = generateTripPoints(10);
 const EVENT_EDIT = generateTripPoints(1);
@@ -19,20 +17,62 @@ const headerMainElement = bodyElement.querySelector(`.trip-main`);
 const ControlsElement = headerMainElement.querySelector(`.trip-controls`);
 const siteTripEventsElement = bodyElement.querySelector(`.trip-events`);
 
-render(headerMainElement, new TripInfo().getElement(), RenderPosition.AFTERBEGIN);
-render(ControlsElement, new SiteMenu().getElement(), RenderPosition.BEFOREEND);
-render(ControlsElement, new Filters().getElement(), RenderPosition.BEFOREEND);
-render(siteTripEventsElement, new Sort().getElement(), RenderPosition.BEFOREEND);
-render(siteTripEventsElement, new EventsList().getElement(), RenderPosition.BEFOREEND);
+render(headerMainElement, new TripInfo(), RenderPosition.AFTERBEGIN);
+render(ControlsElement, new SiteMenu(), RenderPosition.BEFOREEND);
+render(ControlsElement, new Filters(), RenderPosition.BEFOREEND);
 
-const siteListEventsElement = siteTripEventsElement.querySelector(`.trip-events__list`);
+const tripPresenter = new TripPresenter(siteTripEventsElement);
+tripPresenter.init(EVENT_POINTS);
 
-// render(siteListEventsElement, createFormEditTemplate(...EVENT_EDIT, TypeEvents, CITIES, `edit`), `beforeend`);
+// render(siteTripEventsElement, new Sort(), RenderPosition.BEFOREEND);
+// render(siteTripEventsElement, new EventsList(), RenderPosition.BEFOREEND);
 //
-// EVENT_POINTS.forEach((point) => {
-//   render(siteListEventsElement, createEventsItemTemplate(point), `beforeend`);
+// const siteListEventsElement = siteTripEventsElement.querySelector(`.trip-events__list`);
+//
+// const renderTrip = (ListElement, trip) => {
+//   const tripComponent = new EventItem(trip);
+//   const tripEditComponent = new EventEdit(trip);
+//
+//   const replaceCardToForm = () => {
+//     replace(tripEditComponent, tripComponent);
+//   };
+//
+//   const replaceFormToCard = () => {
+//     replace(tripComponent, tripEditComponent);
+//   };
+//
+//   const onEscKeyDown = (evt) => {
+//     if (evt.key === `Escape` || evt.key === `Esc`) {
+//       evt.preventDefault();
+//       replaceFormToCard();
+//       document.removeEventListener(`keydown`, onEscKeyDown);
+//     }
+//   };
+//
+//   tripComponent.setEditClickHandler(() => {
+//     replaceCardToForm();
+//     document.addEventListener(`keydown`, onEscKeyDown);
+//   });
+//
+//   tripEditComponent.setFormSubmitHandler(() => {
+//     replaceFormToCard();
+//     document.removeEventListener(`keydown`, onEscKeyDown);
+//   });
+//
+//   render(ListElement, tripComponent, RenderPosition.BEFOREEND);
+// };
+//
+// // render(siteListEventsElement, new EventEdit(...EVENT_EDIT, `edit`), RenderPosition.BEFOREEND);
+//
+// EVENT_POINTS.forEach((trip) => {
+//   renderTrip(siteListEventsElement, trip);
 // });
 //
-// render(siteListEventsElement, createFormEditTemplate(EVENT_CREATE, TypeEvents, CITIES, `create`), `beforeend`);
+// if (!EVENT_POINTS.length) {
+//   render(siteTripEventsElement, new NoEventTripView(), RenderPosition.BEFOREEND);
+// }
+
+// render(siteListEventsElement, new EventEdit().getElement(EVENT_CREATE, TypeEvents, CITIES, `create`), RenderPosition.BEFOREEND);
 
 // todo: надо считать duration где-то тут
+

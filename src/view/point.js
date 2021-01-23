@@ -1,7 +1,6 @@
-import {createElement} from "../helpers/utils";
+import Abstract from "./abstract";
 
 const getSelectedOffers = (offers) => {
-
   if (!offers || !offers.length) {
     return;
   }
@@ -41,7 +40,7 @@ const generateOffersTemplate = (list, template) => {
   return result;
 };
 
-export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {
+const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {
   const imgPathName = typeEvent.name.toLowerCase();
   const selectedOffers = getSelectedOffers(offers);
 
@@ -81,24 +80,35 @@ export const createEventsItemTemplate = ({city, date: {duration, from, to}, isFa
             </li>`;
 };
 
-// export default class EventsItem {
-//   constructor() {
-//     this._element = null;
-//   }
-//
-//   getTemplate(dataEvent) {
-//     return createEventsItemTemplate(dataEvent);
-//   }
-//
-//   getElement(dataEvent) {
-//     if (!this._element) {
-//       this._element = createElement(this.getTemplate(dataEvent));
-//     }
-//
-//     return this._element;
-//   }
-//
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+export default class Point extends Abstract {
+  constructor(trip) {
+    super();
+    this._trip = trip;
+    this._editClickHandler = this._editClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+  }
+
+  getTemplate() {
+    return createEventsItemTemplate(this._trip);
+  }
+
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+}

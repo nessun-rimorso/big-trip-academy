@@ -1,52 +1,9 @@
 import dayjs from "dayjs";
-import {getRandomInteger} from "../helpers/utils";
+import {getRandomInteger} from "../utils/common";
+import {TypeEvents, CITIES} from "../helpers/constants";
 
-export const TypeEvents = {
-  TAXI: {
-    name: `Taxi`,
-    offers: [],
-  },
-  BUS: {
-    name: `Bus`,
-    offers: [`LUAGGAGE`, `COMFORT_CLASS`, `MEAL`, `CHOOSE_SEATS`, `BOOK_TICKETS`],
-  },
-  TRAIN: {
-    name: `Train`,
-    offers: [`COMFORT_CLASS`, `UBER`, `MEAL`, `CHOOSE_SEATS`, `BOOK_TICKETS`],
-  },
-  SHIP: {
-    name: `Ship`,
-    offers: [`COMFORT_CLASS`, `UBER`, `MEAL`, `CHOOSE_SEATS`, `RENT_CAR`],
-  },
-  TRANSPORT: {
-    name: `Transport`,
-    offers: [`MEAL`, `CHOOSE_SEATS`],
-  },
-  DRIVE: {
-    name: `Drive`,
-    offers: [`LUAGGAGE`, `MEAL`],
-  },
-  FLIGHT: {
-    name: `Flight`,
-    offers: [`LUAGGAGE`, `COMFORT_CLASS`, `BY_TRAIN`, `UBER`, `MEAL`, `RENT_CAR`],
-  },
-  CHECK_IN: {
-    name: `Check-in`,
-    offers: [`BY_TRAIN`, `MEAL`, `LUNCH`],
-  },
-};
-export const CITIES = [
-  `Rome`,
-  `Florence`,
-  `Naples`,
-  `Milan`,
-  `Parma`,
-  `Bologna`,
-  `Palermo`,
-  `Pompeii`,
-  `Turin`,
-  `Venice`,
-];
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const Offers = {
   LUAGGAGE: {
     name: `Add luggage`,
@@ -180,6 +137,7 @@ const getTotal = (price, offers) => {
 
 const generateEventPoint = () => {
   const template = {
+    id: generateId(),
     typeEvent: generateRandomData(TypeEvents),
     city: generateRandomData(CITIES),
     destinationInfo: getDescription(DESCRIPTIONS),
@@ -205,6 +163,7 @@ export const generateTripPoints = (points = 15) => {
 
 export const generateVoidPoint = () => {
   const template = {
+    id: generateId(),
     typeEvent: ``,
     city: ``,
     destinationInfo: ``,

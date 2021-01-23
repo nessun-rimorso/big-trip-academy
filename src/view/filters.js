@@ -1,5 +1,5 @@
 import {FILTERS} from "../helpers/constants";
-import {createElement} from "../helpers/utils";
+import Abstract from "./abstract";
 
 const getTemplateFilters = (filters) => {
   let result = ``;
@@ -23,7 +23,6 @@ const getTemplateFilters = (filters) => {
 
   return result;
 };
-
 const createFiltersTemplate = () => {
   return `<div>
             <h2 class="visually-hidden">Filter events</h2>
@@ -34,24 +33,8 @@ const createFiltersTemplate = () => {
           </div>`;
 };
 
-export default class Filters {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Filters extends Abstract {
   getTemplate() {
     return createFiltersTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
