@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/common";
 import {TypeEvents, CITIES} from "../helpers/constants";
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const Offers = {
   LUAGGAGE: {
     name: `Add luggage`,
@@ -135,6 +137,7 @@ const getTotal = (price, offers) => {
 
 const generateEventPoint = () => {
   const template = {
+    id: generateId(),
     typeEvent: generateRandomData(TypeEvents),
     city: generateRandomData(CITIES),
     destinationInfo: getDescription(DESCRIPTIONS),
@@ -160,6 +163,7 @@ export const generateTripPoints = (points = 15) => {
 
 export const generateVoidPoint = () => {
   const template = {
+    id: generateId(),
     typeEvent: ``,
     city: ``,
     destinationInfo: ``,
