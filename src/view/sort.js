@@ -11,7 +11,7 @@ const getTemplateSorts = (sorts) => {
           <input id="sort-${sort}"
                  class="trip-sort__input  visually-hidden"
                  type="radio" name="trip-sort"
-                 value="sort-${sort}"
+                 value="${sort}"
                  ${isChecked ? `` : `checked`}
           >
           <label class="trip-sort__btn" for="sort-${sort}">${sort}</label>
@@ -30,7 +30,28 @@ const createSortTemplate = () => {
 };
 
 export default class Sort extends Abstract {
+  constructor() {
+    super();
+
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+  }
+
   getTemplate() {
     return createSortTemplate();
+  }
+
+  _sortTypeChangeHandler(evt) {
+    if (evt.target.tagName !== `INPUT`) {
+      return;
+    }
+
+    if (evt.target.value === 'day' || evt.target.value === 'price') {
+      this._callback.sortTypeChange(evt.target.value);
+    }
+  }
+
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
   }
 }

@@ -3,6 +3,8 @@ import NoEventTripView from "../view/no-event-trip";
 import Sort from "../view/sort.js";
 import PointPresenter from "./point.js";
 import {updateItem} from "../utils/common.js";
+import {sortDay, sortPrice} from "../utils/point.js";
+import {SortType} from "../helpers/constants";
 
 import {render, RenderPosition, replace} from "../utils/render.js";
 
@@ -12,6 +14,7 @@ export default class TripPresenter {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
+    this._currentSortType = SortType.DAY;
 
     this._sortComponent = new Sort();
     this._pointsListComponent = new EventsList();
@@ -19,10 +22,12 @@ export default class TripPresenter {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(tripPoints) {
     this._tripPoints = tripPoints.slice();
+
     render(this._tripContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
 
     this._renderTrip();
@@ -39,8 +44,32 @@ export default class TripPresenter {
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this._tripPoints.sort(sortDay);
+        break;
+      case SortType.PRICE:
+        this._tripPoints.sort(sortPrice);
+        break;
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+    this._clearPointList();
+    this._renderPointsList();
+  }
+
   _renderSort() {
     render(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderPoint(point) {
@@ -65,7 +94,7 @@ export default class TripPresenter {
   }
 
   _renderPointsList() {
-    this._renderPoints(0, Math.min(this._tripPoints.length, EVENT_POINTS));
+    this._renderPoints();
   }
 
   _renderTrip() {
