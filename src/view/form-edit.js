@@ -1,8 +1,20 @@
 // todo: надо считать total где-то тут, и вообще правильно ли он считается
 
 import dayjs from "dayjs";
-import Abstract from "./abstract";
+import SmartView from "./smart.js";
 import {TypeEvents, CITIES} from "../helpers/constants";
+import {getOffers} from "../utils/common";
+
+const BLANK_TASK = {
+  typeEvent: ``,
+  city: ``,
+  destinationInfo: ``,
+  photos: ``,
+  price: ``,
+  date: {from: ``, to: ``},
+  isFavourite: false,
+  total: 0,
+};
 
 const templateType = (type, active) => {
   if (!type || !type.name) {
@@ -193,25 +205,97 @@ const createFormEditTemplate = ({city, date: {from, to}, offers, price, typeEven
             </li>`;
 };
 
-export default class EventEdit extends Abstract {
-  constructor(trip, mode) {
+export default class EventEdit extends SmartView {
+  constructor(trip = BLANK_TASK, mode) {
     super();
-    this._trip = trip;
+    this._data = EventEdit.parseTripToData(trip);
     this._mode = mode;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._closeFormClickHandler = this._closeFormClickHandler.bind(this);
+    this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
+    this._cityToggleHandler = this._cityToggleHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(trip) {
+    this.updateData(
+        EventEdit.parseTripToData(trip)
+    );
   }
 
   getTemplate() {
-    return createFormEditTemplate(this._trip, this._mode);
+    return createFormEditTemplate(this._data, this._mode);
+  }
+
+  _eventTypeToggleHandler(evt) {
+    evt.preventDefault();
+    let type = evt.target.value.toUpperCase();
+    type = type.split(`-`).join(`_`);
+
+    if (!TypeEvents[type]) {
+      return;
+    }
+
+    this.updateData({
+      typeEvent: TypeEvents[type],
+      offers: TypeEvents[type].offers ? getOffers(TypeEvents[type].offers) : [],
+    });
+  }
+
+  _cityToggleHandler(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      city: evt.target.value,
+    });
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._data);
+  }
+
+  _closeFormClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeFormClick();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelectorAll(`.event__type-input`)
+      .forEach((radio) => {
+        radio.addEventListener(`change`, this._eventTypeToggleHandler);
+      });
+
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`change`, this._cityToggleHandler);
+  }
+
+  setCloseFormClickHandler(callback) {
+    this._callback.closeFormClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._closeFormClickHandler);
   }
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  static parseTripToData(trip) {
+    return Object.assign(
+        {},
+        trip,
+        {
+          isDueDate: trip.dueDate !== null,
+        }
+    );
   }
 }

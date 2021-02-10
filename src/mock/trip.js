@@ -1,56 +1,9 @@
 import dayjs from "dayjs";
-import {getRandomInteger} from "../utils/common";
-import {TypeEvents, CITIES} from "../helpers/constants";
+import {getRandomInteger, getOffersByType} from "../utils/common";
+import {TypeEvents, CITIES, Offers} from "../helpers/constants";
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-const Offers = {
-  LUAGGAGE: {
-    name: `Add luggage`,
-    price: 30,
-    isActive: false,
-  },
-  COMFORT_CLASS: {
-    name: `Switch to comfort class`,
-    price: 56,
-    isActive: false,
-  },
-  BY_TRAIN: {
-    name: `Travel by train`,
-    price: 2576,
-    isActive: !!getRandomInteger(),
-  },
-  UBER: {
-    name: `Order Uber`,
-    price: 20,
-    isActive: !!getRandomInteger(),
-  },
-  MEAL: {
-    name: `Add meal`,
-    price: 1,
-    isActive: !!getRandomInteger(),
-  },
-  CHOOSE_SEATS: {
-    name: `Choose seats`,
-    price: 100,
-    isActive: !!getRandomInteger(),
-  },
-  RENT_CAR: {
-    name: `Rent a car`,
-    price: 200,
-    isActive: !!getRandomInteger(),
-  },
-  BOOK_TICKETS: {
-    name: `Book tickets`,
-    price: 40,
-    isActive: !!getRandomInteger(),
-  },
-  LUNCH: {
-    name: `Lunch in city`,
-    price: 30,
-    isActive: !!getRandomInteger(),
-  },
-};
 const DESCRIPTIONS = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
 
@@ -64,19 +17,6 @@ const generateRandomData = (list) => {
     const keyType = keys[randomIndex];
     return list[keyType];
   }
-};
-const getOffersByType = (type, offers) => {
-  if (!type) return;
-
-  const result = [];
-
-  type.offers.forEach((item) => {
-    const offer = {[item]: offers[item]};
-
-    result.push(offer);
-  });
-
-  return result;
 };
 const getDescription = (list, from = 1, to = 5) => {
   const iterration = getRandomInteger(from, to);

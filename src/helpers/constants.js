@@ -1,3 +1,5 @@
+import {getRandomInteger} from "../utils/common";
+
 export const SORTS = [
   `day`,
   `event`,
@@ -66,4 +68,52 @@ export const SortType = {
   TIME: `time`,
   PRICE: `price`,
   OFFERS: `offers`,
+};
+
+export const Offers = {
+  LUAGGAGE: {
+    name: `Add luggage`,
+    price: 30,
+    isActive: false,
+  },
+  COMFORT_CLASS: {
+    name: `Switch to comfort class`,
+    price: 56,
+    isActive: false,
+  },
+  BY_TRAIN: {
+    name: `Travel by train`,
+    price: 2576,
+    isActive: !!getRandomInteger(),
+  },
+  UBER: {
+    name: `Order Uber`,
+    price: 20,
+    isActive: !!getRandomInteger(),
+  },
+  MEAL: {
+    name: `Add meal`,
+    price: 1,
+    isActive: !!getRandomInteger(),
+  },
+  CHOOSE_SEATS: {
+    name: `Choose seats`,
+    price: 100,
+    isActive: !!getRandomInteger(),
+  },
+  RENT_CAR: {
+    name: `Rent a car`,
+    price: 200,
+    isActive: !!getRandomInteger(),
+  },
+  BOOK_TICKETS: {
+    name: `Book tickets`,
+    price: 40,
+    isActive: !!getRandomInteger(),
+  },
+  LUNCH: {
+    name: `Lunch in city`,
+    price: 30,
+    isActive: !!getRandomInteger(),
+  },
 };
