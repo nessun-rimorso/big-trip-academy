@@ -40,13 +40,13 @@ const generateOffersTemplate = (list, template) => {
   return result;
 };
 
-const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite, offers, price, typeEvent}) => {
+const createEventsItemTemplate = ({city, date: {duration, startTime, endTime}, isFavourite, offers, price, typeEvent}) => {
   const imgPathName = typeEvent.name.toLowerCase();
   const selectedOffers = getSelectedOffers(offers);
 
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="${from.format(`YYYY-MM-DD`)}">${from.format(`MMM
+                <time class="event__date" datetime="${startTime.format(`YYYY-MM-DD`)}">${startTime.format(`MMM
                  DD`).toUpperCase()}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${imgPathName}.png" alt="Event type icon">
@@ -54,9 +54,9 @@ const createEventsItemTemplate = ({city, date: {duration, from, to}, isFavourite
                 <h3 class="event__title">${typeEvent.name} ${city}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${from.format(`YYYY-MM-DD[T]HH:mm`)}">${from.format(`HH-mm`)}</time>
+                    <time class="event__start-time" datetime="${startTime.format(`YYYY-MM-DD[T]HH:mm`)}">${startTime.format(`HH-mm`)}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="${to.format(`YYYY-MM-DD[T]HH:mm`)}">${to.format(`HH-mm`)}</time>
+                    <time class="event__end-time" datetime="${endTime.format(`YYYY-MM-DD[T]HH:mm`)}">${endTime.format(`HH-mm`)}</time>
                   </p>
                   <p class="event__duration">${duration}</p>
                 </div>

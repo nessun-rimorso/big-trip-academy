@@ -21,6 +21,8 @@ export default class SmartView extends Abstract {
       return;
     }
 
+    console.log(this._data);
+
     this.updateElement();
   }
 
