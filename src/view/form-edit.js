@@ -1,9 +1,10 @@
-// todo: надо считать total где-то тут, и вообще правильно ли он считается
-
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
 import {TypeEvents, CITIES} from "../helpers/constants";
 import {getOffers} from "../utils/common";
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_TASK = {
   typeEvent: ``,
@@ -11,7 +12,7 @@ const BLANK_TASK = {
   destinationInfo: ``,
   photos: ``,
   price: ``,
-  date: {from: ``, to: ``},
+  date: {startTime: ``, endTime: ``},
   isFavourite: false,
   total: 0,
 };
@@ -112,7 +113,7 @@ const typeEventDefault = {
   offers: [`LUAGGAGE`, `COMFORT_CLASS`, `MEAL`, `CHOOSE_SEATS`, `BOOK_TICKETS`],
 };
 
-const createFormEditTemplate = ({city, date: {from, to}, offers, price, typeEvent, destinationInfo, photos}, mode) => {
+const createFormEditTemplate = ({city, date: {startTime, endTime}, offers, price, typeEvent, destinationInfo, photos}, mode) => {
   if (!typeEvent) {
     typeEvent = typeEventDefault;
     offers = typeEventDefault.offers;
@@ -164,13 +165,13 @@ const createFormEditTemplate = ({city, date: {from, to}, offers, price, typeEven
                     <input class="event__input  event__input--time"
                            id="event-start-time-1"
                            type="text" name="event-start-time"
-                           value="${from ? from.format(`DD/MM/YY HH:mm`) : dayjs().format(`DD/MM/YY HH:mm`)}">
+                           value="${startTime ? startTime.format(`DD/MM/YY HH:mm`) : dayjs().format(`DD/MM/YY HH:mm`)}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-1">To</label>
                     <input class="event__input  event__input--time"
                            id="event-end-time-1"
                            type="text" name="event-end-time"
-                           value="${to ? to.format(`DD/MM/YY HH:mm`) : dayjs().format(`DD/MM/YY HH:mm`)}">
+                           value="${endTime ? endTime.format(`DD/MM/YY HH:mm`) : dayjs().format(`DD/MM/YY HH:mm`)}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -210,13 +211,17 @@ export default class EventEdit extends SmartView {
     super();
     this._data = EventEdit.parseTripToData(trip);
     this._mode = mode;
+    this._datepickers = {};
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeFormClickHandler = this._closeFormClickHandler.bind(this);
     this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
     this._cityToggleHandler = this._cityToggleHandler.bind(this);
+    this._startTimeChangeHandler = this._startTimeChangeHandler.bind(this);
+    this._endTimeChangeHandler = this._endTimeChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepickers();
   }
 
   reset(trip) {
@@ -231,8 +236,7 @@ export default class EventEdit extends SmartView {
 
   _eventTypeToggleHandler(evt) {
     evt.preventDefault();
-    let type = evt.target.value.toUpperCase();
-    type = type.split(`-`).join(`_`);
+    const type = evt.target.value.toUpperCase().split(`-`).join(`_`);
 
     if (!TypeEvents[type]) {
       return;
@@ -264,7 +268,50 @@ export default class EventEdit extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepickers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setCloseFormClickHandler(this._callback.closeFormClick);
+  }
+
+  _setDatepickers() {
+    this._setDatepickerStartTime(`start-time`);
+    this._setDatepickerEndTime(`end-time`);
+  }
+
+  _setDatepickerStartTime(periodTime) {
+    this._destroyDatepicker(periodTime);
+
+    this._datepickers[periodTime] = flatpickr(
+        this.getElement().querySelector(`.event__input--time[name='event-${periodTime}']`),
+        {
+          dateFormat: `d/m/y H:i`,
+          enableTime: true,
+          defaultDate: this._data.date.startTime,
+          onChange: this._startTimeChangeHandler,
+        }
+    );
+  }
+
+  _setDatepickerEndTime(periodTime) {
+    this._destroyDatepicker(periodTime);
+
+    this._datepickers[periodTime] = flatpickr(
+        this.getElement().querySelector(`.event__input--time[name='event-${periodTime}']`),
+        {
+          dateFormat: `d/m/y H:i`,
+          enableTime: true,
+          minDate: this._data.date[`startTime`],
+          defaultDate: this._data.date.endTime,
+          onChange: this._endTimeChangeHandler,
+        }
+    );
+  }
+
+  _destroyDatepicker(periodTime) {
+    if (this._datepickers && this._datepickers[periodTime]) {
+      this._datepickers[periodTime].destroy();
+      this._datepickers[periodTime] = null;
+    }
   }
 
   _setInnerHandlers() {
@@ -277,6 +324,16 @@ export default class EventEdit extends SmartView {
     this.getElement()
       .querySelector(`.event__input--destination`)
       .addEventListener(`change`, this._cityToggleHandler);
+  }
+
+  _startTimeChangeHandler([userDate]) {
+    const update = Object.assign({}, this._data.date, {startTime: dayjs(userDate)});
+    this.updateData({date: update});
+  }
+
+  _endTimeChangeHandler([userDate]) {
+    const update = Object.assign({}, this._data.date, {endTime: dayjs(userDate)});
+    this.updateData({date: update});
   }
 
   setCloseFormClickHandler(callback) {

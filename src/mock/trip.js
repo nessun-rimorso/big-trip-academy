@@ -44,10 +44,10 @@ const getPhotos = (from = 1, to = 8) => {
 };
 const getDate = () => {
   const {$M: currentMonth, $y: currentYear} = dayjs();
-  const from = +(new Date(currentYear, currentMonth - 1, 0));
-  const to = +(new Date(currentYear, currentMonth + 1, 0));
+  const startTime = +(new Date(currentYear, currentMonth - 1, 0));
+  const endTime = +(new Date(currentYear, currentMonth + 1, 0));
   const MAX_DURATION = 3600 * 5 * 1000; // максимальная длительность 5 часов
-  const startDate = getRandomInteger(from, to);
+  const startDate = getRandomInteger(startTime, endTime);
   const endDate = getRandomInteger(startDate, startDate + MAX_DURATION);
   const duration = dayjs(endDate - startDate - (3600 * 3 * 1000));
   if (duration.$s > 0) {
@@ -58,8 +58,8 @@ const getDate = () => {
   const durationFormatted = (duration.$H === 0) ? duration.format(`mm[M]`) : duration.format(`HH[H] mm[M]`);
 
   return {
-    from: dayjs(startDate),
-    to: dayjs(endDate),
+    startTime: dayjs(startDate),
+    endTime: dayjs(endDate),
     duration: durationFormatted,
   };
 };
@@ -109,7 +109,7 @@ export const generateVoidPoint = () => {
     destinationInfo: ``,
     photos: ``,
     price: ``,
-    date: {from: ``, to: ``},
+    date: {startTime: ``, endTime: ``},
     isFavourite: false,
     total: 0,
   };
