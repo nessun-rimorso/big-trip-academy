@@ -10,8 +10,9 @@ import {render, RenderPosition, replace} from "../utils/render.js";
 
 const EVENT_POINTS = 10;
 
-export default class TripPresenter {
-  constructor(tripContainer) {
+export default class TripBoardPresenter {
+  constructor(tripContainer, tripsModel) {
+    this._tripsModel = tripsModel;
     this._tripContainer = tripContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY;
@@ -25,12 +26,21 @@ export default class TripPresenter {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(tripPoints) {
-    this._tripPoints = tripPoints.slice();
-
+  init() {
     render(this._tripContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
 
     this._renderTrip();
+  }
+
+  _getPoints() {
+    switch (this._currentSortType) {
+      case SortType.DAY:
+        return this._tripsModel.getPoints().slice().sort(sortDay);
+      case SortType.PRICE:
+        return this._tripsModel.getPoints().slice().sort(sortPrice);
+    }
+
+    return this._tripsModel.getPoints();
   }
 
   _handleModeChange() {
@@ -40,21 +50,8 @@ export default class TripPresenter {
   }
 
   _handlePointChange(updatedPoint) {
-    this._tripPoints = updateItem(this._tripPoints, updatedPoint);
+    // Здесь будем вызывать обновление модели
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
-  }
-
-  _sortPoints(sortType) {
-    switch (sortType) {
-      case SortType.DAY:
-        this._tripPoints.sort(sortDay);
-        break;
-      case SortType.PRICE:
-        this._tripPoints.sort(sortPrice);
-        break;
-    }
-
-    this._currentSortType = sortType;
   }
 
   _handleSortTypeChange(sortType) {
@@ -62,7 +59,7 @@ export default class TripPresenter {
       return;
     }
 
-    this._sortPoints(sortType);
+    this._currentSortType = sortType;
     this._clearPointList();
     this._renderPointsList();
   }
@@ -78,8 +75,8 @@ export default class TripPresenter {
     this._pointPresenter[point.id] = pointPresenter;
   }
 
-  _renderPoints() {
-    this._tripPoints.forEach((tripPoint) => this._renderPoint(tripPoint));
+  _renderPoints(points) {
+    points.forEach((tripPoint) => this._renderPoint(tripPoint));
   }
 
   _renderNoPoints() {
@@ -94,17 +91,18 @@ export default class TripPresenter {
   }
 
   _renderPointsList() {
-    this._renderPoints();
+    const points = this._getPoints().slice();
+    this._renderPoints(points);
   }
 
   _renderTrip() {
-    if (!this._tripPoints.length) {
+    if (!this._getPoints().length) {
       this._renderNoPoints();
     }
 
     this._renderSort();
     this._renderPointsList();
 
-    this._renderPointsList(0, Math.min(this._tripPoints.length, EVENT_POINTS));
+    // this._renderPointsList(0, Math.min(this._tripPoints.length, EVENT_POINTS));
   }
 }

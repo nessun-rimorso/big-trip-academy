@@ -93,13 +93,13 @@ export default class PointPresenter {
 
   _handleFavoriteClick() {
     this._changeData(
-        Object.assign(
-            {},
-            this._point,
-            {
-              isFavorite: !this._point.isFavorite
-            }
-        )
+      Object.assign(
+        {},
+        this._point,
+        {
+          isFavorite: !this._point.isFavorite
+        }
+      )
     );
   }
 
