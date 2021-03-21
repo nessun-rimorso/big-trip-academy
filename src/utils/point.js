@@ -5,5 +5,5 @@ export const sortPrice = (pointA, pointB) => {
 };
 
 export const sortDay = (pointA, pointB) => {
-  return pointA.date.from.unix() > pointB.date.from.unix() ? 1 : -1;
+  return pointA.date.startTime.unix() > pointB.date.startTime.unix() ? 1 : -1;
 };

@@ -30,14 +30,16 @@ const createSortTemplate = () => {
 };
 
 export default class Sort extends Abstract {
-  constructor() {
+  constructor(currentSortType) {
     super();
+
+    this._currentSortType = currentSortType;
 
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createSortTemplate();
+    return createSortTemplate(this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {
@@ -45,7 +47,7 @@ export default class Sort extends Abstract {
       return;
     }
 
-    if (evt.target.value === 'day' || evt.target.value === 'price') {
+    if (evt.target.value === `day` || evt.target.value === `price`) {
       this._callback.sortTypeChange(evt.target.value);
     }
   }
