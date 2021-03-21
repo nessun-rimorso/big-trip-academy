@@ -1,6 +1,7 @@
 import Point from "../view/point";
 import EventEdit from "../view/form-edit";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from "../helpers/constants";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -93,17 +94,24 @@ export default class PointPresenter {
 
   _handleFavoriteClick() {
     this._changeData(
-      Object.assign(
-        {},
-        this._point,
-        {
-          isFavorite: !this._point.isFavorite
-        }
-      )
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._point,
+            {
+              isFavorite: !this._point.isFavorite
+            }
+        )
     );
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(point) {
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        point
+    );
     this._replaceFormToCard();
   }
 
