@@ -118,13 +118,6 @@ export default class TripBoardPresenter {
     render(this._tripContainer, this._noTripComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _clearPointList() {
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._pointPresenter = {};
-  }
-
   _clearBoard({resetSortType = false} = {}) {
     Object
       .values(this._pointPresenter)

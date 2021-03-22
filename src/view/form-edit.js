@@ -214,6 +214,7 @@ export default class EventEdit extends SmartView {
     this._datepickers = {};
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeFormClickHandler = this._closeFormClickHandler.bind(this);
     this._eventTypeToggleHandler = this._eventTypeToggleHandler.bind(this);
     this._cityToggleHandler = this._cityToggleHandler.bind(this);
@@ -222,6 +223,15 @@ export default class EventEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepickers();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (Object.keys(this._datepickers).length) {
+      this._destroyDatepicker(`start-time`);
+      this._destroyDatepicker(`end-time`);
+    }
   }
 
   reset(trip) {
@@ -271,6 +281,7 @@ export default class EventEdit extends SmartView {
     this._setDatepickers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseFormClickHandler(this._callback.closeFormClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setDatepickers() {
@@ -344,6 +355,16 @@ export default class EventEdit extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._data);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`button[type=reset]`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   static parseTripToData(trip) {

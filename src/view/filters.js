@@ -1,6 +1,8 @@
 import {FILTERS} from "../helpers/constants";
 import Abstract from "./abstract";
 
+
+//todo: переделать на мап getTemplateFilters
 const getTemplateFilters = (filters) => {
   let result = ``;
   let isChecked = false;
@@ -23,11 +25,11 @@ const getTemplateFilters = (filters) => {
 
   return result;
 };
-const createFiltersTemplate = () => {
+const createFiltersTemplate = (filter, currentFilterType) => {
   return `<div>
             <h2 class="visually-hidden">Filter events</h2>
             <form class="trip-filters" action="#" method="get">
-              ${getTemplateFilters(FILTERS)}
+              ${getTemplateFilters(filter)}
               <button class="visually-hidden" type="submit">Accept filter</button>
             </form>
           </div>`;
@@ -35,6 +37,6 @@ const createFiltersTemplate = () => {
 
 export default class Filters extends Abstract {
   getTemplate() {
-    return createFiltersTemplate();
+    return createFiltersTemplate(FILTERS);
   }
 }

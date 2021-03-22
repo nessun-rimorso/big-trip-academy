@@ -1,7 +1,8 @@
 import Point from "../view/point";
 import EventEdit from "../view/form-edit";
-import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import {render, RenderPosition, replace, remove} from "../utils/render";
 import {UserAction, UpdateType} from "../helpers/constants";
+import {isDatesEqual} from "../utils/point";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -23,6 +24,7 @@ export default class PointPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleCloseForm = this._handleCloseForm.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -38,6 +40,7 @@ export default class PointPresenter {
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setCloseFormClickHandler(this._handleCloseForm);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -107,12 +110,22 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
+    const isMinorUpdate = !isDatesEqual(this._point.startTime, point.startTime);
+
     this._changeData(
         UserAction.UPDATE_POINT,
-        UpdateType.MINOR,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         point
     );
     this._replaceFormToCard();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point
+    );
   }
 
   _handleCloseForm() {
