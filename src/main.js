@@ -32,3 +32,8 @@ const filterPresenter = new FilterPresenter(ControlsElement, filterModel, tripsM
 
 filterPresenter.init();
 tripBoardPresenter.init();
+
+document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  tripBoardPresenter.createTrip();
+});

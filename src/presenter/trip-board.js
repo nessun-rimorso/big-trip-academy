@@ -2,10 +2,10 @@ import EventsList from "../view/events-list";
 import NoEventTripView from "../view/no-event-trip";
 import Sort from "../view/sort.js";
 import PointPresenter from "./point.js";
+import PointNewPresenter from "../presenter/point-new";
 import {sortDay, sortPrice} from "../utils/point.js";
 import {filter} from "../utils/filter.js";
-import {SortType} from "../helpers/constants";
-import {UserAction, UpdateType} from "../helpers/constants";
+import {UserAction, UpdateType, SortType, FilterType} from "../helpers/constants";
 
 import {render, RenderPosition, remove} from "../utils/render.js";
 
@@ -30,6 +30,8 @@ export default class TripBoardPresenter {
 
     this._tripsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(this._pointsListComponent, this._handleViewAction);
   }
 
   init() {
@@ -38,9 +40,17 @@ export default class TripBoardPresenter {
     this._renderBoard();
   }
 
+  createTrip() {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+    this._pointNewPresenter.init();
+  }
+
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const trips = this._tripsModel.getPoints();
+    // todo: починить создание новой точки
+    console.log(filterType, 'filterType');
     const filteredTrips = filter[filterType](trips);
 
     if (filteredTrips.length) {
@@ -56,6 +66,8 @@ export default class TripBoardPresenter {
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
+
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.resetView());
@@ -128,6 +140,8 @@ export default class TripBoardPresenter {
   }
 
   _clearBoard({resetSortType = false} = {}) {
+    this._pointNewPresenter.destroy();
+
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -154,7 +168,5 @@ export default class TripBoardPresenter {
 
     this._renderSort();
     this._renderPointsList();
-
-    // this._renderPointsList(0, Math.min(this._tripPoints.length, EVENT_POINTS));
   }
 }
