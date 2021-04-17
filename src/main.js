@@ -1,10 +1,10 @@
 import TripInfo from "./view/trip-info.js";
 import SiteMenu from "./view/menu.js";
-import Filters from "./view/filters.js";
 import PointsModel from "./model/points-model";
 import FilterModel from "./model/filter-model.js";
 
 import TripBoardPresenter from "./presenter/trip-board.js";
+import FilterPresenter from "./presenter/filter.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 import {generateTripPoints, generateVoidPoint} from "./mock/trip";
@@ -26,7 +26,9 @@ const siteTripEventsElement = bodyElement.querySelector(`.trip-events`);
 
 render(headerMainElement, new TripInfo(), RenderPosition.AFTERBEGIN);
 render(ControlsElement, new SiteMenu(), RenderPosition.BEFOREEND);
-render(ControlsElement, new Filters(), RenderPosition.BEFOREEND);
 
-const tripBoardPresenter = new TripBoardPresenter(siteTripEventsElement, tripsModel);
+const tripBoardPresenter = new TripBoardPresenter(siteTripEventsElement, tripsModel, filterModel);
+const filterPresenter = new FilterPresenter(ControlsElement, filterModel, tripsModel);
+
+filterPresenter.init();
 tripBoardPresenter.init();
