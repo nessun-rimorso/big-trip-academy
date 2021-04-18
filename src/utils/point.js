@@ -12,6 +12,6 @@ export const isDatesEqual = (dateA, dateB) => {
   return (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, `D`);
 };
 
-export const isPointFromThePast = (point) => point.startTime < new Date().getTime();
+export const isPointFromThePast = (point) => point.date.startTime < new Date().getTime();
 
-export const isPointFromTheFuture = (point) => point.startTime > new Date().getTime();
+export const isPointFromTheFuture = (point) => point.date.startTime > new Date().getTime();
