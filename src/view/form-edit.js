@@ -6,17 +6,6 @@ import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
-const BLANK_TASK = {
-  typeEvent: ``,
-  city: ``,
-  destinationInfo: ``,
-  photos: ``,
-  price: ``,
-  date: {startTime: ``, endTime: ``},
-  isFavourite: false,
-  total: 0,
-};
-
 const templateType = (type, active) => {
   if (!type || !type.name) {
     return;
@@ -204,6 +193,26 @@ const createFormEditTemplate = ({city, date: {startTime, endTime}, offers, price
                 </section>
               </form>
             </li>`;
+};
+
+const BLANK_TASK = {
+  typeEvent: TypeEvents.BUS,
+  city: `Rome`,
+  destinationInfo: `lorem lorem lorem lorem`,
+  photos: [
+    `http://picsum.photos/248/152?r=0.8559337030312777`,
+    `http://picsum.photos/248/152?r=0.35033702529697`,
+    `http://picsum.photos/248/152?r=0.9191850917379791`,
+    `http://picsum.photos/248/152?r=0.7469854419363204`,
+  ],
+  price: ``,
+  date: {
+    startTime: ``,
+    endTime: ``,
+  },
+  isFavourite: false,
+  total: 0,
+  offers: getOffers(TypeEvents.BUS),
 };
 
 export default class EventEdit extends SmartView {

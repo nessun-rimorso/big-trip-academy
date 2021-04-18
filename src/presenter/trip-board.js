@@ -41,16 +41,14 @@ export default class TripBoardPresenter {
   }
 
   createTrip() {
-    this._currentSortType = SortType.DEFAULT;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init();
   }
 
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const trips = this._tripsModel.getPoints();
-    // todo: починить создание новой точки
-    console.log(filterType, 'filterType');
     const filteredTrips = filter[filterType](trips);
 
     if (filteredTrips.length) {
@@ -120,9 +118,9 @@ export default class TripBoardPresenter {
       this._sortComponent = null;
     }
 
-    this._sortComponent = new Sort(this._sortComponent);
+    this._sortComponent = new Sort(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
+    render(this._tripContainer, this._sortComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(point) {

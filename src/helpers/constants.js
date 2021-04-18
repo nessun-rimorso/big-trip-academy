@@ -8,12 +8,6 @@ export const SORTS = [
   `offers`,
 ];
 
-export const FILTERS = [
-  `everything`,
-  `future`,
-  `past`,
-];
-
 export const TypeEvents = {
   TAXI: {
     name: `Taxi`,
