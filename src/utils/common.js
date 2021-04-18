@@ -8,7 +8,9 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 export const getOffersByType = (type, offers) => {
-  if (!type) return;
+  if (!type) {
+    return;
+  }
 
   const result = [];
 
@@ -22,7 +24,9 @@ export const getOffersByType = (type, offers) => {
 };
 
 export const getOffers = (offers) => {
-  if (!offers.length) return;
+  if (!offers.length) {
+    return;
+  }
 
   const result = [];
 
